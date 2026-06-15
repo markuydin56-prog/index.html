@@ -1,0 +1,1617 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ИССЛЕДОВАТЕЛЬСКИЙ ДЕПАРТАМЕНТ БРАКОНЬЕРОВ // ПРОЕКТ ФЕНИКС</title>
+  <style>
+    :root{
+      --bg:#040406;
+      --bg2:#0b0d12;
+      --panel:#0f131a;
+      --panel2:#131a23;
+      --line:#2b3440;
+      --text:#e8edf2;
+      --muted:#92a0af;
+      --red:#d63a3a;
+      --red2:#ff4c4c;
+      --amber:#d9a441;
+      --amber2:#ffcc66;
+      --success:#5ad37f;
+      --warning:#ffbb33;
+      --glow:0 0 15px rgba(214,58,58,.25), 0 0 40px rgba(214,58,58,.12);
+      --radius:18px;
+      --radius-sm:12px;
+      --shadow:0 18px 50px rgba(0,0,0,.45);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: Inter, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 50% -10%, rgba(214,58,58,.15), transparent 60%),
+        radial-gradient(900px 480px at 70% 0%, rgba(217,164,65,.12), transparent 55%),
+        linear-gradient(180deg, #020203, #07090c 40%, #040406 100%);
+      overflow-x:hidden;
+    }
+
+    body::before{
+      content:"";
+      position:fixed; inset:0;
+      pointer-events:none;
+      background:
+        linear-gradient(to bottom, rgba(255,255,255,.04) 0, rgba(255,255,255,0) 2px) 0 0/100% 4px,
+        linear-gradient(90deg, rgba(214,58,58,.02), rgba(255,255,255,0), rgba(217,164,65,.02));
+      mix-blend-mode:screen;
+      opacity:.38;
+      animation: scan 12s linear infinite;
+      z-index:3;
+    }
+
+    @keyframes scan{from{background-position:0 0,0 0} to{background-position:0 120px,0 0}}
+    .shell{position:relative; min-height:100vh; padding:20px; z-index:1}
+    .app{
+      max-width:1400px; margin:0 auto;
+      display:grid; gap:18px;
+      grid-template-columns: 320px 1fr;
+    }
+
+    .card{
+      background:linear-gradient(180deg, rgba(19,26,35,.93), rgba(10,12,17,.93));
+      border:1px solid rgba(255,255,255,.06);
+      box-shadow:var(--shadow);
+      border-radius:var(--radius);
+      backdrop-filter: blur(10px);
+    }
+
+    .sidebar{
+      padding:18px;
+      position:sticky; top:20px; height:calc(100vh - 40px);
+      display:flex; flex-direction:column; gap:16px;
+      overflow:hidden;
+    }
+
+    .logoBox{
+      padding:20px 16px;
+      border-radius:22px;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(214,58,58,.35), transparent 55%),
+        linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+      border:1px solid rgba(255,255,255,.06);
+      text-align:center;
+      position:relative;
+    }
+    .sigil{
+      width:120px;height:120px; margin:0 auto 16px;
+      position:relative;
+      border-radius:50%;
+      border:1px solid rgba(255,255,255,.12);
+      box-shadow: inset 0 0 35px rgba(214,58,58,.12), 0 0 25px rgba(214,58,58,.12);
+      background:
+        radial-gradient(circle at 50% 50%, rgba(217,164,65,.15), transparent 48%),
+        conic-gradient(from 0deg, rgba(214,58,58,.0), rgba(214,58,58,.85), rgba(217,164,65,.1), rgba(214,58,58,.85), rgba(214,58,58,.0));
+      overflow:hidden;
+    }
+    .sigil::before, .sigil::after{
+      content:""; position:absolute; inset:20px; border-radius:50%;
+      border:1px solid rgba(255,255,255,.15);
+      transform:rotate(45deg);
+    }
+    .sigil::after{inset:38px; transform:none}
+    .sigilMark{
+      position:absolute; inset:0;
+      display:grid; place-items:center;
+      font-size:42px; font-weight:900; letter-spacing:2px;
+      color:#fff; text-shadow:0 0 14px rgba(255,255,255,.2);
+    }
+    .orgName{
+      font-size:12px; text-transform:uppercase; letter-spacing:.24em;
+      color:var(--amber2); margin:0 0 10px;
+    }
+    .orgBig{
+      font-size:17px; font-weight:800; line-height:1.2; margin:0;
+      text-wrap:balance;
+    }
+
+    .statusList{display:grid; gap:10px;}
+    .statusRow{
+      display:flex; justify-content:space-between; gap:12px;
+      padding:12px 14px; border-radius:14px;
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.05);
+      font-size:13px;
+    }
+    .statusRow b{color:#fff}
+    .statusVal{color:var(--amber2); font-weight:700}
+
+    .accessPanel{
+      display:grid; gap:12px;
+      padding:14px;
+      border-radius:16px;
+      background:linear-gradient(180deg, rgba(214,58,58,.08), rgba(255,255,255,.02));
+      border:1px solid rgba(214,58,58,.22);
+    }
+    .accessPanel h3{margin:0; font-size:12px; text-transform:uppercase; letter-spacing:.18em; color:#ffd3d3}
+    .inputRow{display:grid; grid-template-columns:1fr auto; gap:10px}
+    .inputRow input, .toolbar input, select, textarea{
+      width:100%;
+      color:var(--text);
+      background:#0a0d12;
+      border:1px solid rgba(255,255,255,.09);
+      border-radius:12px;
+      padding:12px 13px;
+      outline:none;
+      font:inherit;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.35);
+    }
+    .inputRow input:focus, .toolbar input:focus, select:focus, textarea:focus{
+      border-color:rgba(217,164,65,.55);
+      box-shadow:0 0 0 3px rgba(217,164,65,.12);
+    }
+    .btn{
+      border:0; cursor:pointer;
+      color:#110b0b;
+      font-weight:800;
+      padding:12px 15px;
+      border-radius:12px;
+      letter-spacing:.04em;
+      background:linear-gradient(180deg, var(--amber2), var(--amber));
+      transition:transform .16s ease, filter .16s ease, opacity .2s ease;
+      box-shadow:0 10px 25px rgba(217,164,65,.15);
+    }
+    .btn:hover{transform:translateY(-1px)}
+    .btn:active{transform:translateY(1px) scale(.99)}
+    .btn.secondary{
+      background:linear-gradient(180deg, rgba(255,255,255,.1), rgba(255,255,255,.04));
+      color:var(--text);
+      border:1px solid rgba(255,255,255,.09);
+      box-shadow:none;
+    }
+    .btn.red{
+      background:linear-gradient(180deg, #ff6a6a, var(--red));
+      color:#fff;
+    }
+    .small{font-size:12px; color:var(--muted); line-height:1.5;}
+    .lockNotice{min-height:18px; font-size:12px; color:#ff7b7b;}
+    .footerMeta{
+      margin-top:auto;
+      padding:14px;
+      border-radius:16px;
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.05);
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.6;
+    }
+
+    .main{display:grid; gap:18px;}
+    .hero{
+      padding:26px;
+      position:relative;
+      overflow:hidden;
+    }
+    .hero::after{
+      content:""; position:absolute; inset:auto -20% -50% -20%; height:240px;
+      background:radial-gradient(circle, rgba(214,58,58,.25), transparent 65%);
+      filter:blur(10px);
+    }
+    .heroTop{
+      display:flex; align-items:flex-start; justify-content:space-between; gap:20px;
+      flex-wrap:wrap;
+    }
+    .heroTitle{max-width:800px;}
+    .kicker{
+      margin:0 0 12px;
+      font-size:12px; text-transform:uppercase; letter-spacing:.28em;
+      color:var(--amber2);
+    }
+    h1{
+      margin:0;
+      font-size:clamp(30px, 3vw, 56px);
+      line-height:1.02;
+      letter-spacing:.02em;
+      text-transform:uppercase;
+      text-wrap:balance;
+    }
+    .subtitle{
+      margin:14px 0 0;
+      font-size:15px;
+      line-height:1.7;
+      color:var(--muted);
+      max-width:900px;
+    }
+    .heroStats{
+      display:grid; gap:10px; min-width:280px;
+      grid-template-columns:1fr 1fr;
+    }
+    .stat{
+      padding:14px 15px;
+      border-radius:16px;
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.05);
+    }
+    .stat .lbl{font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.14em}
+    .stat .val{margin-top:6px; font-weight:800; color:#fff}
+    .stat.highlight .val{color:var(--amber2)}
+
+    .toolbar{
+      display:flex; align-items:center; gap:10px;
+      flex-wrap:wrap;
+      padding:16px;
+    }
+    .toolbar .grow{flex:1 1 240px}
+    .tabs{
+      display:flex; flex-wrap:wrap; gap:10px;
+      padding:0 16px 16px;
+    }
+    .tab{
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.03);
+      color:var(--text);
+      padding:11px 14px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:700;
+      transition:.18s ease;
+    }
+    .tab.active, .tab:hover{
+      background:linear-gradient(180deg, rgba(214,58,58,.18), rgba(214,58,58,.07));
+      border-color:rgba(214,58,58,.35);
+      box-shadow:var(--glow);
+    }
+
+    .content{display:grid; gap:18px;}
+    .doc{
+      padding:22px;
+      position:relative;
+      overflow:hidden;
+      border-left:3px solid rgba(217,164,65,.45);
+    }
+    .doc.locked{
+      opacity:.45;
+      filter:saturate(.2);
+      pointer-events:none;
+    }
+    .docHeader{
+      display:flex; justify-content:space-between; gap:16px; align-items:flex-start; flex-wrap:wrap;
+      margin-bottom:16px;
+    }
+    .docHeader h2{margin:0; font-size:24px; text-transform:uppercase; letter-spacing:.03em}
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      border-radius:999px;
+      padding:9px 12px;
+      border:1px solid rgba(255,255,255,.09);
+      background:rgba(255,255,255,.03);
+      color:#fff;
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+    .badge.secret{border-color:rgba(214,58,58,.28); background:rgba(214,58,58,.09); color:#ffd8d8}
+    .badge.topsecret{border-color:rgba(217,164,65,.32); background:rgba(217,164,65,.08); color:#ffe8bc}
+    .badge.max{border-color:rgba(255,76,76,.34); background:rgba(255,76,76,.08); color:#ffdede}
+    .doc p{
+      color:#d3dae2;
+      line-height:1.85;
+      margin:0 0 14px;
+      font-size:15px;
+    }
+    .section{
+      margin-top:18px;
+      padding:16px;
+      border-radius:16px;
+      background:rgba(255,255,255,.025);
+      border:1px solid rgba(255,255,255,.06);
+    }
+    .section h3{
+      margin:0 0 10px;
+      font-size:14px;
+      text-transform:uppercase;
+      letter-spacing:.16em;
+      color:var(--amber2);
+    }
+    .grid2{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+    .grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:14px}
+    .box{
+      padding:14px;
+      background:rgba(0,0,0,.22);
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:14px;
+    }
+    .box .t{font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.14em}
+    .box .v{margin-top:8px; font-weight:800; color:#fff; line-height:1.5}
+    .box .v small{display:block; margin-top:8px; color:var(--muted); font-weight:600}
+
+    .columns{columns:2 300px; column-gap:14px;}
+    .note{
+      break-inside:avoid;
+      margin:0 0 14px;
+      padding:14px;
+      border-radius:14px;
+      border:1px dashed rgba(255,255,255,.1);
+      background:rgba(255,255,255,.02);
+    }
+    .note .head{color:var(--amber2); font-weight:800; margin-bottom:8px; font-size:12px; text-transform:uppercase; letter-spacing:.12em}
+    .note p{margin:0; font-size:14px; line-height:1.8; color:#d6dde6}
+
+    .warning{
+      padding:18px;
+      border-radius:18px;
+      border:1px solid rgba(255,76,76,.35);
+      background:linear-gradient(180deg, rgba(255,76,76,.16), rgba(255,76,76,.06));
+      box-shadow:0 0 0 1px rgba(255,255,255,.03), 0 15px 35px rgba(255,0,0,.1);
+    }
+    .warning .title{
+      display:flex; align-items:center; gap:10px;
+      margin:0 0 12px;
+      color:#ffe3e3;
+      text-transform:uppercase;
+      font-size:13px;
+      letter-spacing:.18em;
+    }
+    .pulse{
+      width:10px;height:10px;border-radius:50%; background:var(--red2);
+      box-shadow:0 0 0 0 rgba(255,76,76,.5);
+      animation:pulse 1.4s infinite;
+    }
+    @keyframes pulse{to{box-shadow:0 0 0 18px rgba(255,76,76,0)}}
+    .warning pre{
+      white-space:pre-wrap; margin:0; font:inherit;
+      line-height:1.75; color:#ffd4d4;
+    }
+
+    .timeline{display:grid; gap:12px;}
+    .timelineItem{
+      display:grid; grid-template-columns:150px 1fr;
+      gap:14px; align-items:start;
+      padding:14px;
+      border-radius:14px;
+      background:rgba(255,255,255,.025);
+      border:1px solid rgba(255,255,255,.05);
+    }
+    .timelineItem .date{
+      color:var(--amber2); font-weight:900;
+      text-transform:uppercase; letter-spacing:.12em;
+      font-size:12px;
+    }
+    .timelineItem .contentTxt{
+      color:#d9e1ea; line-height:1.8; font-size:14px;
+    }
+
+    .archiveGrid{
+      display:grid; grid-template-columns:repeat(auto-fit, minmax(240px,1fr)); gap:14px;
+    }
+    .docCard{
+      padding:16px;
+      border-radius:16px;
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.06);
+      min-height:162px;
+      display:flex; flex-direction:column; gap:12px;
+    }
+    .docCard .id{font-size:12px; color:var(--muted); letter-spacing:.14em; text-transform:uppercase}
+    .docCard h4{margin:0; font-size:17px; text-transform:uppercase}
+    .docCard p{margin:0; line-height:1.7; color:#cfd7e0; font-size:14px}
+    .docCard button{margin-top:auto}
+
+    .accessDenied{
+      padding:18px;
+      border-radius:16px;
+      border:1px solid rgba(214,58,58,.2);
+      background:rgba(214,58,58,.06);
+      color:#ffd7d7;
+      text-align:center;
+      font-weight:700;
+      letter-spacing:.08em;
+    }
+
+    .toastWrap{
+      position:fixed; right:18px; bottom:18px; z-index:50;
+      display:grid; gap:10px;
+      width:min(360px, calc(100vw - 36px));
+      pointer-events:none;
+    }
+    .toast{
+      pointer-events:none;
+      padding:14px 15px;
+      border-radius:14px;
+      background:rgba(13,17,24,.94);
+      border:1px solid rgba(255,255,255,.08);
+      box-shadow:var(--shadow);
+      transform:translateY(20px);
+      opacity:0;
+      transition:.24s ease;
+    }
+    .toast.show{transform:translateY(0); opacity:1}
+    .toast .t{font-size:12px; text-transform:uppercase; letter-spacing:.16em; color:var(--amber2); margin-bottom:6px}
+    .toast .m{font-size:14px; color:#dbe3eb; line-height:1.6}
+
+    .loadingOverlay{
+      position:fixed; inset:0; z-index:60;
+      background:radial-gradient(circle at center, rgba(255,255,255,.04), transparent 45%), rgba(0,0,0,.96);
+      display:grid; place-items:center;
+      transition:opacity .5s ease, visibility .5s ease;
+    }
+    .loadingOverlay.hide{opacity:0; visibility:hidden}
+    .loader{
+      width:min(560px, calc(100vw - 40px));
+      padding:28px;
+      border-radius:22px;
+      border:1px solid rgba(255,255,255,.07);
+      background:linear-gradient(180deg, rgba(19,26,35,.95), rgba(10,12,17,.98));
+      box-shadow:var(--shadow);
+    }
+    .loader .title{
+      margin:0 0 12px;
+      text-transform:uppercase;
+      letter-spacing:.22em;
+      color:var(--amber2);
+      font-size:12px;
+    }
+    .progress{
+      height:12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.06);
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.06);
+    }
+    .bar{
+      height:100%;
+      width:0;
+      background:linear-gradient(90deg, var(--red), var(--amber2));
+      box-shadow:0 0 18px rgba(255,76,76,.35);
+      transition:width .2s linear;
+    }
+    .loader .state{
+      margin-top:12px;
+      color:#dfe7ef;
+      line-height:1.7;
+      font-size:14px;
+      min-height:48px;
+    }
+
+    .secretStamp{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:7px 11px;
+      border-radius:999px;
+      border:1px solid rgba(255,76,76,.26);
+      background:rgba(255,76,76,.08);
+      color:#ffdede;
+      font-size:11px;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.16em;
+    }
+
+    .type{
+      border-right:2px solid rgba(255,204,102,.85);
+      display:inline-block;
+      white-space:pre-wrap;
+      animation:caret 1s steps(1) infinite;
+    }
+    @keyframes caret{50%{border-right-color:transparent}}
+
+    .hidden{display:none !important}
+
+    @media (max-width: 1100px){
+      .app{grid-template-columns:1fr}
+      .sidebar{position:relative; top:auto; height:auto}
+      .heroStats{grid-template-columns:1fr 1fr}
+      .timelineItem{grid-template-columns:1fr}
+    }
+    @media (max-width: 720px){
+      .shell{padding:12px}
+      .hero, .doc, .sidebar{padding:14px}
+      .grid2, .grid3{grid-template-columns:1fr}
+      .heroStats{grid-template-columns:1fr}
+      .inputRow{grid-template-columns:1fr}
+      .tabs{padding:0 14px 14px}
+      .tab{width:100%; text-align:center}
+      h1{font-size:28px}
+    }
+  </style>
+</head>
+<body>
+  <div class="loadingOverlay" id="loading">
+    <div class="loader">
+      <p class="title">Загрузка центрального архива // Подключение к защищённому контуру</p>
+      <div class="progress"><div class="bar" id="bar"></div></div>
+      <div class="state type" id="loadingText"></div>
+    </div>
+  </div>
+
+  <div class="toastWrap" id="toastWrap"></div>
+
+  <div class="shell">
+    <div class="app">
+      <aside class="sidebar card">
+        <div class="logoBox">
+          <div class="sigil">
+            <div class="sigilMark">✦</div>
+          </div>
+          <p class="orgName">ИССЛЕДОВАТЕЛЬСКИЙ ДЕПАРТАМЕНТ БРАКОНЬЕРОВ</p>
+          <p class="orgBig">ЦЕНТРАЛЬНЫЙ АРХИВ ИССЛЕДОВАТЕЛЬСКОГО ДЕПАРТАМЕНТА БРАКОНЬЕРОВ</p>
+        </div>
+
+        <div class="statusList">
+          <div class="statusRow"><span>СТАТУС СИСТЕМЫ</span><span class="statusVal">АКТИВНА</span></div>
+          <div class="statusRow"><span>АКТИВНЫХ ПРОЕКТОВ</span><span class="statusVal">17</span></div>
+          <div class="statusRow"><span>УРОВЕНЬ УГРОЗЫ</span><span class="statusVal">ПОВЫШЕННЫЙ</span></div>
+          <div class="statusRow"><span>ДОСТУП</span><span class="statusVal">ТРЕБУЕТ АВТОРИЗАЦИИ</span></div>
+        </div>
+
+        <div class="accessPanel">
+          <h3>Панель ввода кода доступа</h3>
+          <div class="inputRow">
+            <input id="codeInput" type="password" placeholder="Введите код доступа" autocomplete="off" />
+            <button class="btn" id="unlockBtn">Войти</button>
+          </div>
+          <div class="inputRow" style="grid-template-columns:1fr 1fr;">
+            <button class="btn secondary" id="toggleCode">Показать код</button>
+            <button class="btn secondary" id="soundBtn">Звук: ВКЛ</button>
+          </div>
+          <div class="lockNotice" id="lockNotice">Ожидание ввода.</div>
+          <div class="small">Подсказка для демонстрации: коды доступа соответствуют уровням допуска 1, 2 и 3. После успешного входа открываются дополнительные документы и журналы.</div>
+        </div>
+
+        <div class="footerMeta">
+          <div><span class="secretStamp">СЕКРЕТНЫЙ КОНТУР</span></div>
+          <div style="margin-top:10px">ЖУРНАЛ ДОСТУПА: <b id="journalCount">0</b> записей</div>
+          <div>ПОСЛЕДНЯЯ СИНХРОНИЗАЦИЯ: <span id="clock"></span></div>
+        </div>
+      </aside>
+
+      <main class="main">
+        <section class="hero card">
+          <div class="heroTop">
+            <div class="heroTitle">
+              <p class="kicker">Внутренний архив // Защищённая база данных</p>
+              <h1>ПРОЕКТ ФЕНИКС</h1>
+              <p class="subtitle">
+                Фазовая Экстракорпоральная Нейро-Информационная Конверсия Сознания.
+                Доступ к материалам ограничен уровнями допуска. Разделы ниже содержат оперативные сводки,
+                внутренние отчёты, документы исследований, архив подразделений и записи о неопознанном объекте VOID.
+              </p>
+            </div>
+            <div class="heroStats">
+              <div class="stat">
+                <div class="lbl">РЕЖИМ</div>
+                <div class="val">ТЕРМИНАЛЬНЫЙ</div>
+              </div>
+              <div class="stat highlight">
+                <div class="lbl">ПРОТОКОЛ</div>
+                <div class="val">PHOENIX</div>
+              </div>
+              <div class="stat">
+                <div class="lbl">КАНАЛ</div>
+                <div class="val">ЗАЩИЩЁН</div>
+              </div>
+              <div class="stat highlight">
+                <div class="lbl">СОБЫТИЯ</div>
+                <div class="val">НАБЛЮДАЮТСЯ</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="toolbar">
+            <div class="grow">
+              <input id="searchInput" type="search" placeholder="Поиск по архиву: объект, подразделение, отчёт, координаты..." />
+            </div>
+            <button class="btn secondary" id="clearSearch">Сбросить</button>
+            <button class="btn red" id="purgeBtn">Стереть следы</button>
+          </div>
+          <div class="tabs">
+            <button class="tab active" data-tab="overview">Обзор</button>
+            <button class="tab" data-tab="archive">Архив документов</button>
+            <button class="tab" data-tab="units">Подразделения</button>
+            <button class="tab" data-tab="research">Исследования</button>
+            <button class="tab" data-tab="objects">Объекты</button>
+          </div>
+        </section>
+
+        <section class="content" id="contentArea">
+
+          <article class="doc card tabPanel" data-panel="overview">
+            <div class="docHeader">
+              <div>
+                <span class="badge secret">ЦЕНТРАЛЬНЫЙ ДОСТУП</span>
+                <h2>ОБЗОР СИТУАЦИИ</h2>
+              </div>
+              <div class="badge">СТЕПЕНЬ ДОСТУПА: <span id="currentAccess">0</span></div>
+            </div>
+            <p>
+              Система представляет собой скрытую корпоративную среду хранения материалов, классифицированных по
+              уровню допуска, критичности и важности для программы ФЕНИКС. Документы визуализируются как
+              внутренний архив разведывательной организации: сухой язык отчётов, лаконичные заголовки, метки
+              секретности и следы намеренного удаления данных.
+            </p>
+            <p>
+              Для демонстрации используется рабочая схема авторизации: после ввода верного кода открывается
+              соответствующий уровень допуска, фиксируется запись в журнале, а следующие разделы становятся
+              активными. Ошибки приводят к блокировке контуров доступа.
+            </p>
+            <div class="grid2">
+              <div class="box">
+                <div class="t">ДОСТУП 1</div>
+                <div class="v">Операция ФЕНИКС — первичный доступ
+                  <small>Секретные сведения о получении экспериментального образца и разведывательной оценке объекта.</small>
+                </div>
+              </div>
+              <div class="box">
+                <div class="t">ДОСТУП 2</div>
+                <div class="v">Досье на объект VOID
+                  <small>Наблюдения, свойства, реакции и повреждённый сигнал экспедиционной группы.</small>
+                </div>
+              </div>
+              <div class="box">
+                <div class="t">ДОСТУП 3</div>
+                <div class="v">Проект ФЕНИКС — полный доступ
+                  <small>Внутренние протоколы, теории, испытания, архивные пометки и программные цели.</small>
+                </div>
+              </div>
+              <div class="box">
+                <div class="t">ЖУРНАЛ</div>
+                <div class="v">Каждая попытка доступа регистрируется
+                  <small>Неверные коды временно блокируют вход и формируют отдельную запись наблюдения.</small>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- LEVEL 1 -->
+          <article class="doc card tabPanel" data-panel="archive" data-access="1">
+            <div class="docHeader">
+              <div>
+                <span class="badge secret">УРОВЕНЬ ДОПУСКА 1</span>
+                <h2>ОПЕРАЦИЯ ФЕНИКС — ПЕРВИЧНЫЙ ДОСТУП</h2>
+              </div>
+              <div class="badge secret">ГРИФ: СЕКРЕТНО</div>
+            </div>
+
+            <p>
+              По личному указанию Совета Верховных Координаторов, количество которых составляет
+              <span style="color:var(--amber2)">[ДАННЫЕ УДАЛЕНЫ]</span>, инициирована операция по получению
+              экспериментального образца для дальнейшего проведения процедуры ФЕНИКС.
+            </p>
+            <p>
+              Согласно имеющимся разведданным, в объекте недвижимости <span style="color:var(--amber2)">[ЗАСЕКРЕЧЕНО]</span>
+              содержится существо, обладающее аномальными свойствами, представляющими исключительный интерес для
+              Исследовательского Департамента Браконьеров. Предполагаемый уровень опасности объекта превышает
+              допустимые показатели для стандартных исследовательских программ.
+            </p>
+            <p>
+              В связи с этим было принято решение о привлечении нескольких специализированных подразделений
+              организации. Работу предстояло вести тихо, быстро и с учётом вероятности нестандартного
+              пространственного поведения объекта. Все упоминания о подготовительном этапе, маршрутах доставки и
+              составе руководства намеренно отредактированы в исходном экземпляре.
+            </p>
+
+            <div class="section">
+              <h3>История обнаружения объекта</h3>
+              <div class="timeline">
+                <div class="timelineItem">
+                  <div class="date">11 АПРЕЛЯ 19██</div>
+                  <div class="contentTxt">
+                    Впервые объект был отмечен на периферии оперативной карты после обращения местного жителя —
+                    человека крайне мнительного, тревожного и, по словам наблюдателей, находившегося на грани
+                    нервного истощения. Он прибыл в районный рыцарский департамент ранним утром, когда над городом
+                    ещё держался холодный весенний туман, и был принят внедрённым агентом <span style="color:var(--amber2)">[ДАННЫЕ УДАЛЕНЫ]</span>.
+                    В ходе первого разговора мужчина сообщил, что его супруга вошла в старый дом на окраине и больше
+                    не вернулась. По его словам, он ждал её несколько часов, затем несколько дней, после чего начал
+                    самостоятельно проверять территорию и обнаружил признаки чуждой активности.
+                  </div>
+                </div>
+                <div class="timelineItem">
+                  <div class="date">14 АПРЕЛЯ 19██</div>
+                  <div class="contentTxt">
+                    После регистрации сигнала была направлена малая группа наблюдения. Осмотр внешнего периметра
+                    показал, что строение выглядит заброшенным лишь формально: окна были запылены, но не повреждены;
+                    двери не имели следов взлома; а почва у порога была странно утрамбована, будто к входу регулярно
+                    подходили и столь же регулярно исчезали. Внутренние замеры показали нехарактерные колебания
+                    пространства в нескольких коридорах, что было расценено как ранний признак нестабильной
+                    архитектурной структуры.
+                  </div>
+                </div>
+                <div class="timelineItem">
+                  <div class="date">16 АПРЕЛЯ 19██</div>
+                  <div class="contentTxt">
+                    Наблюдение велось скрытно. Операторы зафиксировали несколько повторяющихся феноменов: лампы в
+                    окнах загорались без видимого источника питания, силуэты в комнатах появлялись лишь на доли
+                    секунды, а в ряде случаев казалось, что расположение внутренних помещений менялось после каждого
+                    перерыва на наблюдение. Полученные данные были перенесены в закрытый архив и помечены как
+                    "структурная аномалия второго типа".
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="section">
+              <h3>Отчёты разведки</h3>
+              <div class="columns">
+                <div class="note">
+                  <div class="head">Доклад полевого наблюдателя</div>
+                  <p>
+                    Разведка сообщала, что любое живое существо, входившее в дом, переставало фиксироваться
+                    внешними датчиками почти мгновенно. Сначала это касалось человека, однако затем тот же
+                    эффект подтвердился при пропаже бродячего кота, нескольких птиц и мелких животных, которые
+                    случайно приближались к участку. Следов борьбы не обнаруживалось, но воздух вблизи порога
+                    казался заметно тяжелее и холоднее, чем на соседних улицах.
+                  </p>
+                </div>
+                <div class="note">
+                  <div class="head">Птичья активность</div>
+                  <p>
+                    Над домом практически не было замечено птиц. Любые стаи, направлявшиеся через район, меняли
+                    курс заранее, будто реагировали на невидимый сигнал тревоги. Если птица всё же приближалась к
+                    крыше, она немедленно уходила в сторону, а затем исчезала из зоны наблюдения. Наблюдатели
+                    отмечали, что даже шум крыльев становился слабее в радиусе нескольких десятков метров.
+                  </p>
+                </div>
+                <div class="note">
+                  <div class="head">Изменчивый интерьер</div>
+                  <p>
+                    Внутренний вид дома часто менялся. Комнаты, которые утром считались коридором, вечером могли
+                    оказаться кабинетом; лестница появлялась там, где ранее находилась кладовая; окна меняли
+                    направление света, словно помещение перестраивалось под неизвестный алгоритм. Данное свойство
+                    исключало стандартную картографию и сделало дом непригодным для длительного пребывания обычных
+                    групп без защищённого сопровождения.
+                  </p>
+                </div>
+                <div class="note">
+                  <div class="head">Заключение разведки</div>
+                  <p>
+                    Совокупность признаков указывала на высокую степень аномальной активности. Дом не являлся
+                    статичным объектом наблюдения: он реагировал на присутствие, искажая маршруты, восприятие и,
+                    вероятно, локальные правила пространства. В связи с этим разведывательная сеть рекомендовала
+                    немедленную изоляцию территории и подключение специальных подразделений.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="section">
+              <h3>Оценка угрозы</h3>
+              <p>
+                Уровень угрозы классифицируется как <b style="color:var(--amber2)">ВЫСОКИЙ</b>. Объект представляет
+                опасность не только из-за неизвестного происхождения, но и вследствие нестандартного взаимодействия
+                с пространственной средой. Стабильность наблюдаемого эффекта не подтверждена; любые попытки прямого
+                контакта сопряжены с исчезновением живых субъектов и деформацией периметра.
+              </p>
+            </div>
+
+            <div class="section">
+              <h3>СОСТАВ ЗАДЕЙСТВОВАННЫХ ПОДРАЗДЕЛЕНИЙ</h3>
+              <div class="grid3">
+                <div class="box">
+                  <div class="t">Ударный отряд «Коготь»</div>
+                  <div class="v">Специализированное оперативное подразделение, отвечающее за силовое сопровождение миссии.
+                    <small>Группа обеспечивает безопасное проникновение в зону операции, подавляет сопротивление и нейтрализует внешние угрозы.</small>
+                    <small>Руководитель отряда: Джексон Рид</small>
+                    <small>Куратор: <span style="color:var(--amber2)">[ДАННЫЕ УДАЛЕНЫ]</span></small>
+                  </div>
+                </div>
+                <div class="box">
+                  <div class="t">Группа захвата «Сеть»</div>
+                  <div class="v">Тактическое подразделение, предназначенное для поиска, идентификации и изоляции целевого объекта.
+                    <small>После подтверждения цели группа обеспечивает безопасное удержание и транспортировку к месту дальнейшего исследования.</small>
+                    <small>Руководитель: Маркус Хейл</small>
+                    <small>Куратор: <span style="color:var(--amber2)">[ДАННЫЕ УДАЛЕНЫ]</span></small>
+                  </div>
+                </div>
+                <div class="box">
+                  <div class="t">Научная группа «Пепел»</div>
+                  <div class="v">Исследовательское подразделение, ответственное за первичный осмотр и анализ полученного образца.
+                    <small>Группа проводит проверку подлинности объекта, документирует результаты исследований и готовит образец к процедуре ФЕНИКС.</small>
+                    <small>Руководитель: Доктор Эвелин Шоу</small>
+                    <small>Куратор: <span style="color:var(--amber2)">[ДАННЫЕ УДАЛЕНЫ]</span></small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="section">
+              <h3>Координаты</h3>
+              <div class="grid2">
+                <div class="box"><div class="t">ОТРЫВОК КООРДИНАТ</div><div class="v">54.3817° N<br>112.9742° E</div></div>
+                <div class="box"><div class="t">МЕСТО</div><div class="v">ИССЛЕДОВАТЕЛЬСКИЙ КОМПЛЕКС №4</div></div>
+              </div>
+            </div>
+
+            <div class="accessDenied">ДАЛЬНЕЙШИЕ ДАННЫЕ ТРЕБУЮТ УРОВЕНЬ ДОПУСКА 2</div>
+          </article>
+
+          <!-- LEVEL 2 -->
+          <article class="doc card tabPanel hidden" data-panel="objects" data-access="2">
+            <div class="docHeader">
+              <div>
+                <span class="badge topsecret">УРОВЕНЬ ДОПУСКА 2</span>
+                <h2>ДОСЬЕ НА ОБЪЕКТ VOID</h2>
+              </div>
+              <div class="badge topsecret">ГРИФ: СОВЕРШЕННО СЕКРЕТНО</div>
+            </div>
+
+            <p>
+              <b>Объект исследования:</b> кодовое обозначение <span style="color:var(--amber2)">VOID</span>.
+              Согласно собранным данным, объект представляет собой гуманоидное существо неизвестного происхождения,
+              обладающее способностью к манипуляции аномальной энергией высокой плотности.
+            </p>
+            <p>
+              Согласно собранным данным, объект является уникальной сущностью и не имеет известных аналогов.
+              Попытки установить биологическую классификацию завершились частичным успехом: внешние признаки
+              указывают на принадлежность к гуманоидной форме, однако внутренние показатели противоречат
+              стандартным схемам анатомической оценки.
+            </p>
+            <p>
+              Результаты исследований показывают, что организм объекта подчиняется физическим законам лишь
+              частично. В присутствии наблюдателей фиксировались резкие скачки температуры, локальные помехи в
+              электронных системах, непредсказуемое изменение массы и кратковременные искажения глубины поля
+              зрения. Сама сущность ведёт себя как структура, которая одновременно существует в материальном и
+              фазовом состояниях.
+            </p>
+
+            <div class="section">
+              <h3>Подробное описание</h3>
+              <div class="columns">
+                <div class="note"><div class="head">Морфология</div><p>Фигура VOID сохраняет общий силуэт человека, однако пропорции периодически меняются. Длина конечностей, высота плечевого пояса и чёткость черт лица могут смещаться между наблюдениями без видимой причины. Кожа кажется лишённой постоянной текстуры: на одном снимке она матовая, на другом — почти зеркальная, а иногда объект словно теряет контуры, сливаясь с фоном.</p></div>
+                <div class="note"><div class="head">Поле присутствия</div><p>Вблизи объекта показатели приборов начинают вести себя нестабильно. Компасы вращаются, записи получают разрывы, а звук на коротких участках становится приглушённым, как будто пространство временно теряет плотность. Отдельные приборы перестают отвечать сразу после того, как объект фокусирует взгляд в их сторону.</p></div>
+                <div class="note"><div class="head">Когнитивный эффект</div><p>Некоторые свидетели сообщали о чувстве «пустоты за спиной», о сильной дезориентации и о внезапном ощущении, будто объект уже стоял в помещении до их входа. Психологический отдел указал, что подобная реакция не является нормальной и может быть вызвана сочетанием страха, аномального внушения и неизвестных сенсорных эффектов.</p></div>
+                <div class="note"><div class="head">Стабильность</div><p>При длительном наблюдении VOID не демонстрирует устойчивых паттернов поведения. Он может неподвижно стоять несколько часов, затем исчезнуть без звука, после чего появиться в другом секторе зоны наблюдения. Любая попытка вычислить алгоритм перемещения оказалась недостаточной для полного прогноза.</p></div>
+              </div>
+            </div>
+
+            <div class="section">
+              <h3>Поведение объекта</h3>
+              <p>
+                Поведение объекта определяется как агрессивное. При визуальном контакте с человеком он не вступает
+                в диалог и не демонстрирует привычной реакции на команды. Сразу после того, как объект
+                идентифицирует присутствие человека, тот моментально исчезает из наблюдаемой зоны. Случаи
+                исчезновения происходили столь быстро, что камеры часто успевали зафиксировать лишь размытый
+                контур и краткий всплеск поля.
+              </p>
+              <p>
+                Повторные проверки подтвердили: VOID реагирует не на конкретную личность, а на сам факт живого
+                наблюдателя. Даже защищённые операторы, находившиеся за стеклом и в полной экипировке, вызывали
+                ту же реакцию. По этой причине любые одиночные действия рядом с объектом запрещены.
+              </p>
+            </div>
+
+            <div class="section">
+              <h3>Реакция на вооружение</h3>
+              <p>
+                Реакция на вооружение также классифицируется как агрессивная. При демонстрации оружия человек
+                моментально исчезает, независимо от калибра, типа защиты или дистанции. В ряде тестов объект
+                реагировал даже на скрытое оружие, которое не было напрямую направлено в его сторону. Вероятно,
+                VOID способен считывать намерение к атаке раньше, чем происходит фактическое движение.
+              </p>
+              <p>
+                На основании этого сделан вывод, что стандартные сценарии подавления, удержания и принуждения
+                к контакту не работают. Для экспедиции в зону обнаружения требуются специальные протоколы
+                нейтрального присутствия, частичная дезактивация боевой нагрузки и постоянный контроль со стороны
+                научной группы.
+              </p>
+            </div>
+
+            <div class="section">
+              <h3>Реакция на изоляцию</h3>
+              <p>
+                Реакция на изоляцию — невозможна. Объект не демонстрирует признаков подчинения удерживающим
+                структурам, контейнерам или антенным полям. Любая временная блокировка приводит к тому, что
+                контуры сдерживания выходят из строя, а объект либо покидает зону наблюдения, либо оказывается
+                внутри неё уже после фиксации полного замыкания. Фактически изолировать VOID не удаётся.
+              </p>
+            </div>
+
+            <div class="section">
+              <h3>Гипотезы происхождения</h3>
+              <p>
+                Рабочая гипотеза отдела аномальных исследований предполагает, что существо могло возникнуть
+                примерно во времена зарождения планеты. Это объясняет его почти мифологическую устойчивость,
+                феноменальную адаптивность и неполную подчинённость обычной биологии. В ряде черновых записей
+                объект описан как «свидетель доисторической материи», но данная формулировка не признана
+                официальной.
+              </p>
+              <p>
+                Указывается, что VOID выходит за пределы человеческого понимания и нуждается в глубокой внешней
+                экспертизе, которая в текущих условиях недоступна. Любая попытка определить его в пределах
+                известных классов существ приводит к противоречию между физическим, энергетическим и
+                информационным аспектами. Отсюда следует вывод: объект не просто опасен, он принципиально
+                несовместим с привычной системой научного описания.
+              </p>
+            </div>
+
+            <div class="section">
+              <h3>НАБЛЮДАЕМЫЕ СПОСОБНОСТИ</h3>
+              <div class="grid2">
+                <div class="box"><div class="t">ПОДТВЕРЖДЕНО</div><div class="v">• сверхчеловеческая физическая сила</div></div>
+                <div class="box"><div class="t">ПОДТВЕРЖДЕНО</div><div class="v">• высокая скорость перемещения</div></div>
+                <div class="box"><div class="t">ПОДТВЕРЖДЕНО</div><div class="v">• сопротивление большинству известных видов вооружения</div></div>
+                <div class="box"><div class="t">ПОДТВЕРЖДЕНО</div><div class="v">• способность к восстановлению тканей</div></div>
+                <div class="box" style="grid-column:1/-1"><div class="t">ПОДТВЕРЖДЕНО</div><div class="v">• неизвестные энергетические проявления</div></div>
+              </div>
+            </div>
+
+            <div class="warning">
+              <div class="title"><span class="pulse"></span>ОБНОВЛЕНИЕ ДАННЫХ [ЗАПИСЬ ДОБАВЛЕНА]</div>
+              <pre>Источник:
+Экспедиционная группа «Сеть»
+
+Статус сигнала:
+Повреждён
+
+День 21.
+
+Веду отчет.
+
+Объект по-прежнему неуязвим.
+
+База функционирует штатно...
+
+— Кэп! Я закончил анализ! Оно не бессмертно! В этом мире его можно убить!
+
+(Слышны звуки стрельбы)
+
+— Твою мать! За мной!
+
+(Помехи)
+
+— Оно не бессмертно, повторяю, его можно убить!
+
+(Связь потеряна)
+
+Дальнейшие записи экспедиционной группы отсутствуют.
+
+Причина исчезновения подразделения остаётся неизвестной.
+
+Расследование продолжается.</pre>
+            </div>
+
+            <div class="section">
+              <h3>Координаты</h3>
+              <div class="grid2">
+                <div class="box"><div class="t">ОТРЫВОК КООРДИНАТ</div><div class="v">37.5928° N<br>74.1041° W</div></div>
+                <div class="box"><div class="t">СТАТУС ДОСТУПА</div><div class="v">ДАЛЬНЕЙШАЯ ЧАСТЬ ДОСТУПНА С УРОВНЕМ ДОПУСКА 3</div></div>
+              </div>
+            </div>
+
+            <div class="accessDenied">ДАЛЬНЕЙШИЕ ДАННЫЕ ТРЕБУЮТ УРОВЕНЬ ДОПУСКА 3</div>
+          </article>
+
+          <!-- LEVEL 3 -->
+          <article class="doc card tabPanel hidden" data-panel="research" data-access="3">
+            <div class="docHeader">
+              <div>
+                <span class="badge max">УРОВЕНЬ ДОПУСКА 3</span>
+                <h2>ПРОЕКТ ФЕНИКС — ПОЛНЫЙ ДОСТУП</h2>
+              </div>
+              <div class="badge max">ГРИФ: МАКСИМАЛЬНЫЙ УРОВЕНЬ СЕКРЕТНОСТИ</div>
+            </div>
+
+            <p>
+              Проект ФЕНИКС является экспериментальной программой Исследовательского Департамента Браконьеров,
+              направленной на извлечение, анализ и преобразование нейро-информационных структур разумных существ
+              с последующей фиксацией данных в фазовом носителе.
+            </p>
+            <p>
+              Согласно основной гипотезе проекта, сознание может существовать как устойчивая информационная
+              структура и быть воспроизведено после утраты биологического носителя. Конечной целью программы
+              является достижение функционального бессмертия и создание бессмертных солдат, способных сохранять
+              боевой опыт, память и навыки после физической гибели с последующим переносом в новый носитель.
+            </p>
+            <p>
+              Предварительные результаты испытаний свидетельствуют о возможности создавать временную
+              неуязвимость путем накопления заряда в <span style="color:var(--amber2)">[ДАННЫЕ УДАЛЕНЫ]</span>.
+              Отдельные образцы демонстрируют улучшение когнитивной связности, ускоренное восстановление после
+              критических повреждений и краткие периоды устойчивости к внешним энергетическим воздействиям.
+            </p>
+
+            <div class="section">
+              <h3>История создания проекта</h3>
+              <div class="timeline">
+                <div class="timelineItem">
+                  <div class="date">СОБЫТИЕ 01</div>
+                  <div class="contentTxt">
+                    Зарождение проекта произошло одновременно с первым успешным анализом существа. Один из
+                    <span style="color:var(--amber2)">[ДАННЫЕ УДАЛЕНЫ]</span> Верховных координаторов лично приказал
+                    начать работу над программой под кодовым названием «Феникс». В закрытых заметках
+                    утверждалось, что если организм VOID способен жить вне правил привычной материи, то его
+                    свойства можно попытаться воспроизвести через нейро-информационное копирование и фазовое
+                    хранилище.
+                  </div>
+                </div>
+                <div class="timelineItem">
+                  <div class="date">СОБЫТИЕ 02</div>
+                  <div class="contentTxt">
+                    Первые лабораторные схемы были собраны на базе комплекса №4. На тот момент исследователи
+                    не имели готовой модели переноса сознания, поэтому использовались гибридные протоколы:
+                    каркас биологической совместимости, частичная фазовая стабилизация, серия тестов на
+                    улавливание ментальной структуры и сеть привязки к искусственным контейнерам памяти.
+                    Большинство ранних опытов завершались фрагментарной потерей личности или распадом сигнала.
+                  </div>
+                </div>
+                <div class="timelineItem">
+                  <div class="date">СОБЫТИЕ 03</div>
+                  <div class="contentTxt">
+                    После нескольких провалов группа «Пепел» пришла к выводу, что объектное ядро программы должно
+                    базироваться не только на извлечении данных, но и на адаптации. Отсюда выросла главная теория:
+                    сознание можно не просто скопировать, а научить выживать в новых условиях, внедрив в него
+                    аномальный компонент. Именно поэтому проект получил выраженную фазовую направленность и
+                    стал рассматриваться как система реинтеграции, а не обычного хранения информации.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="section">
+              <h3>Основная теория</h3>
+              <p>
+                Основная теория проекта утверждает, что путем внедрения частицы существа в мозг человека есть шанс
+                того, что носитель сможет приспособиться и перенять отдельные способности объекта. Однако речь
+                идёт не о простом усилении, а о глубокой перестройке нейро-информационной архитектуры.
+                Предполагается, что частица действует как катализатор: она связывает память, инстинкт, фазовый
+                отклик и энергетическую плотность в единую устойчивую конструкцию.
+              </p>
+              <p>
+                В текущей интерпретации это означает возможное появление субъекта, способного сохранять
+                боевые навыки после тяжёлых повреждений, удерживать сознание в крайне нестабильных средах и
+                восстанавливаться после гибели на уровне, недоступном обычному биологическому организму. При этом
+                риск утраты личности, психической фрагментации и несанкционированной аномальной мутации остаётся
+                чрезвычайно высоким.
+              </p>
+              <p>
+                Дополнительная ветвь исследования рассматривает фазовую привязку как способ «помечать» сознание,
+                чтобы затем извлечь его без полного разрушения носителя. Это направление до сих пор вызывает споры
+                внутри научного крыла, так как неясно, является ли перенос сохранением личности или созданием её
+                функциональной копии.
+              </p>
+            </div>
+
+            <div class="section">
+              <h3>Внутренние документы</h3>
+              <div class="archiveGrid">
+                <div class="docCard">
+                  <div class="id">ФР-01 // Сводка</div>
+                  <h4>Протокол фазовой стабилизации</h4>
+                  <p>Описание методов накопления заряда, контроля всплесков и минимизации распада сигнала при переносе.</p>
+                  <button class="btn secondary openDoc" data-title="Протокол фазовой стабилизации">Открыть</button>
+                </div>
+                <div class="docCard">
+                  <div class="id">ФР-02 // Запись</div>
+                  <h4>Наблюдение за носителями</h4>
+                  <p>Отчёты о поведении испытуемых до и после воздействия, с отметками о нарушениях памяти и когнитивной стабильности.</p>
+                  <button class="btn secondary openDoc" data-title="Наблюдение за носителями">Открыть</button>
+                </div>
+                <div class="docCard">
+                  <div class="id">ФР-03 // Архив</div>
+                  <h4>Реестр отказов</h4>
+                  <p>Кодированные причины неудачных попыток: фазовый срыв, разрыв идентичности, неконтролируемая реакция носителя.</p>
+                  <button class="btn secondary openDoc" data-title="Реестр отказов">Открыть</button>
+                </div>
+                <div class="docCard">
+                  <div class="id">ФР-04 // Мемо</div>
+                  <h4>Этический отказ</h4>
+                  <p>Внутреннее возражение части персонала, исключённое из основной версии документа и помеченное как несущественное.</p>
+                  <button class="btn secondary openDoc" data-title="Этический отказ">Открыть</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="section">
+              <h3>Дополнительные исследования</h3>
+              <div class="columns">
+                <div class="note"><div class="head">Проект «Пепельный контур»</div><p>Вспомогательная программа, использующая следовые концентрации аномальной энергии для имитации временной неуязвимости. Результаты противоречивы, однако один из образцов удерживал целостность после испытания дольше любых контрольных прототипов.</p></div>
+                <div class="note"><div class="head">Психонейронная привязка</div><p>При определённых условиях субъект начинает воспринимать объектную информацию как собственную память. Это позволило предположить, что ФЕНИКС может не только копировать сознание, но и создавать у него запасные пути восстановления личности.</p></div>
+                <div class="note"><div class="head">Слои безопасности</div><p>Каждый этап программы сопровождается автономной блокировкой. При попытке несанкционированного доступа документ самозашифровывается, а внутренние замки переводятся в режим наблюдения. Система должна напоминать пользователю, что сведения не предназначены для полного раскрытия.</p></div>
+                <div class="note"><div class="head">Ключевой риск</div><p>Главная угроза состоит в том, что полученная сущность может стать неуправляемой, а сознание — продолжить существование вне рамок проекта. Тогда сам ФЕНИКС перестаёт быть инструментом и превращается в отдельный аномальный субъект.</p></div>
+              </div>
+            </div>
+
+            <div class="section">
+              <h3>Архивные пометки</h3>
+              <p>
+                Записи указывают, что программа продолжает работу несмотря на высокий уровень потерь и
+                нестабильность результата. Некоторые сегменты архива намеренно недоступны даже для старшего
+                научного состава. Это сделано для предотвращения утечки информации о фактическом числе
+                испытаний, перечне испытуемых и реальных параметрах успешного переноса.
+              </p>
+              <p>
+                Внутренние сводки отмечают, что объект VOID и проект ФЕНИКС связаны: взаимодействие с сущностью
+                может служить ключом к усилению фазовой структуры сознания. Однако такое взаимодействие также
+                повышает вероятность неконтролируемого прорыва, потери носителя и перезаписи личности.
+              </p>
+            </div>
+
+            <div class="section">
+              <h3>Координаты и состояние</h3>
+              <div class="grid3">
+                <div class="box"><div class="t">ОТРЫВОК КООРДИНАТ</div><div class="v">81.9924° N<br>43.1708° E</div></div>
+                <div class="box"><div class="t">СТАТУС ПРОЕКТА</div><div class="v">АКТИВЕН</div></div>
+                <div class="box"><div class="t">СТАТУС ОБЪЕКТА VOID</div><div class="v">НЕИЗВЕСТЕН</div></div>
+                <div class="box" style="grid-column:1/-1"><div class="t">СТАТУС ПРОГРАММЫ</div><div class="v">ПРОДОЛЖАЕТСЯ</div></div>
+              </div>
+            </div>
+
+            <div class="warning" style="margin-top:18px;">
+              <div class="title"><span class="pulse"></span>ОСОБЫЙ ДОКУМЕНТ: ЗАПРЕЩАЮЩАЯ ЗАПИСКА</div>
+              <pre>Отдел внутреннего контроля сообщает:
+— Запуск полного цикла возможен только при наличии доказанной фазовой стабильности.
+— Все испытуемые категории "альфа" переводятся в резерв.
+— Доступ к оригинальным протоколам допускается лишь при совпадении сигнатуры кода, биометрии и отметки допуска.
+— Повторение эксперимента без согласования приводит к автоматической блокировке контуров.
+
+Примечание:
+Если объект VOID обнаружит попытку изучения его ядра, он, вероятно, отреагирует раньше, чем будет зафиксирован первый импульс.</pre>
+            </div>
+          </article>
+
+          <article class="doc card tabPanel" data-panel="units" data-access="1">
+            <div class="docHeader">
+              <div>
+                <span class="badge secret">АРХИВ ПОДРАЗДЕЛЕНИЙ</span>
+                <h2>УЧАСТВУЮЩИЕ ГРУППЫ И СТРУКТУРЫ</h2>
+              </div>
+              <div class="badge">ИНСТРУМЕНТАРИЙ ОРГАНИЗАЦИИ</div>
+            </div>
+            <p>
+              Ниже приведены внутренние описания подразделений, взаимодействовавших с объектом и проектом.
+              Материалы частично отредактированы по соображениям безопасности.
+            </p>
+            <div class="grid3">
+              <div class="box">
+                <div class="t">Коготь</div>
+                <div class="v">Силовое прикрытие, периметр, подавление угроз, эвакуация персонала.</div>
+              </div>
+              <div class="box">
+                <div class="t">Сеть</div>
+                <div class="v">Поиск, захват, удержание, картографирование и анализ целевой зоны.</div>
+              </div>
+              <div class="box">
+                <div class="t">Пепел</div>
+                <div class="v">Научный анализ, исследования носителей, фазовые измерения, отчётность.</div>
+              </div>
+            </div>
+            <div class="section">
+              <h3>Профили подразделений</h3>
+              <div class="columns">
+                <div class="note"><div class="head">Ударный отряд «Коготь»</div><p>Отряд сформирован из специалистов ближнего проникновения и тактического сопровождения. Используется при нестандартных инцидентах, когда требуется быстрое подавление внешних факторов. В операции ФЕНИКС группа была назначена для удержания безопасного коридора и контроля возможного прорыва объекта в жилой сектор.</p></div>
+                <div class="note"><div class="head">Группа захвата «Сеть»</div><p>Тактический костяк, работающий на границе между разведкой и непосредственным контактом. Члены группы обучены входить в зону неизвестной архитектуры, проверять смещение комнат и фиксировать нестабильные объекты. В документах отмечено, что «Сеть» была ближе всех к точке первичного столкновения с VOID.</p></div>
+                <div class="note"><div class="head">Научная группа «Пепел»</div><p>Набор исследователей, инженеров и аналитиков, отвечающих за проверку образцов, фазовые схемы и перенос данных. Группа собирает заключения, делает выводы о стабильности и отслеживает любые отклонения. Их отчёты стали основой для разработки ключевого протокола ФЕНИКС.</p></div>
+              </div>
+            </div>
+            <div class="section">
+              <h3>Журнал взаимодействия</h3>
+              <div id="unitLog" class="timeline"></div>
+            </div>
+          </article>
+
+          <article class="doc card tabPanel" data-panel="objects" data-access="3">
+            <div class="docHeader">
+              <div>
+                <span class="badge max">АРХИВ ОБЪЕКТОВ</span>
+                <h2>СВЯЗАННЫЕ СУЩНОСТИ И ПРОТОКОЛЫ</h2>
+              </div>
+              <div class="badge max">ФАЗОВАЯ МАРКИРОВКА</div>
+            </div>
+            <p>
+              Этот раздел содержит сопутствующие записи об аномальных объектах, протоколах изоляции,
+              исследовательских узлах и наблюдательных пакетах, связанных с проектом ФЕНИКС.
+            </p>
+            <div class="archiveGrid">
+              <div class="docCard">
+                <div class="id">OBJ-004</div>
+                <h4>Комплекс №4</h4>
+                <p>Исследовательский узел, где фиксировались первые признаки пространственной деформации и смены внутренних планировок.</p>
+                <button class="btn secondary openDoc" data-title="Комплекс №4">Открыть</button>
+              </div>
+              <div class="docCard">
+                <div class="id">OBJ-VOID</div>
+                <h4>Сущность VOID</h4>
+                <p>Гуманоидный объект неизвестного происхождения с высокой энергетической плотностью и агрессивной реакцией на контакт.</p>
+                <button class="btn secondary openDoc" data-title="Сущность VOID">Открыть</button>
+              </div>
+              <div class="docCard">
+                <div class="id">OBJ-PHX</div>
+                <h4>Протокол PHX</h4>
+                <p>Система фазовой фиксации сознания, рассчитанная на экспериментальные переносы и восстановление после утраты носителя.</p>
+                <button class="btn secondary openDoc" data-title="Протокол PHX">Открыть</button>
+              </div>
+              <div class="docCard">
+                <div class="id">OBJ-REDACTED</div>
+                <h4>[ДАННЫЕ УДАЛЕНЫ]</h4>
+                <p>Сегмент объекта вырезан из базовой версии архива. Доступ только для внутреннего аудита.</p>
+                <button class="btn secondary openDoc" data-title="[ДАННЫЕ УДАЛЕНЫ]">Открыть</button>
+              </div>
+            </div>
+            <div class="section">
+              <h3>Общие замечания</h3>
+              <p>
+                Любой объект, вошедший в зону действия ФЕНИКС, рассматривается не только как физическая цель, но и
+                как информационный носитель. Это меняет подход к наблюдению: вместо обычной изоляции требуется
+                отслеживать структуру памяти, фазовое сопротивление и реакцию на перенос данных. Такой подход
+                считается инновационным, но крайне рискованным.
+              </p>
+            </div>
+          </article>
+
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const ACCESS_CODES = {
+      1: 'PHX-1',
+      2: 'VOID-2',
+      3: 'PHX-3'
+    };
+
+    const state = {
+      access: 0,
+      lockedUntil: 0,
+      failCount: 0,
+      sound: true,
+      activeTab: 'overview',
+      logs: []
+    };
+
+    const el = (id) => document.getElementById(id);
+    const codeInput = el('codeInput');
+    const unlockBtn = el('unlockBtn');
+    const lockNotice = el('lockNotice');
+    const currentAccess = el('currentAccess');
+    const toastWrap = el('toastWrap');
+    const journalCount = el('journalCount');
+    const clock = el('clock');
+    const soundBtn = el('soundBtn');
+    const toggleCodeBtn = el('toggleCode');
+    const purgeBtn = el('purgeBtn');
+    const searchInput = el('searchInput');
+    const clearSearch = el('clearSearch');
+    const loading = el('loading');
+    const bar = el('bar');
+    const loadingText = el('loadingText');
+    const unitLog = el('unitLog');
+
+    function nowStamp(){
+      const d = new Date();
+      return d.toLocaleString('ru-RU', { dateStyle:'medium', timeStyle:'medium' });
+    }
+
+    function beep(freq = 520, duration = 0.06, type = 'sine'){
+      if(!state.sound) return;
+      try{
+        const ctx = beep.ctx || (beep.ctx = new (window.AudioContext || window.webkitAudioContext)());
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = type;
+        o.frequency.value = freq;
+        g.gain.value = 0.012;
+        o.connect(g); g.connect(ctx.destination);
+        o.start();
+        o.stop(ctx.currentTime + duration);
+      }catch(e){}
+    }
+
+    function toast(title, message){
+      const node = document.createElement('div');
+      node.className = 'toast';
+      node.innerHTML = `<div class="t">${title}</div><div class="m">${message}</div>`;
+      toastWrap.appendChild(node);
+      requestAnimationFrame(()=>node.classList.add('show'));
+      setTimeout(()=>{
+        node.classList.remove('show');
+        setTimeout(()=>node.remove(), 240);
+      }, 3200);
+    }
+
+    function logAccess(message, kind='info'){
+      state.logs.unshift({ time: nowStamp(), message, kind });
+      journalCount.textContent = String(state.logs.length);
+      renderUnitLog();
+      saveState();
+    }
+
+    function saveState(){
+      localStorage.setItem('phoenix_archive_state', JSON.stringify({
+        access: state.access,
+        failCount: state.failCount,
+        lockedUntil: state.lockedUntil,
+        sound: state.sound,
+        logs: state.logs
+      }));
+    }
+
+    function loadState(){
+      try{
+        const raw = localStorage.getItem('phoenix_archive_state');
+        if(!raw) return;
+        const saved = JSON.parse(raw);
+        state.access = saved.access || 0;
+        state.failCount = saved.failCount || 0;
+        state.lockedUntil = saved.lockedUntil || 0;
+        state.sound = saved.sound !== false;
+        state.logs = Array.isArray(saved.logs) ? saved.logs : [];
+      }catch(e){}
+    }
+
+    function renderUnitLog(){
+      if(!unitLog) return;
+      const items = [
+        { date:'11 АПРЕЛЯ 19██', content:'Поступил запрос на наблюдение за домом. Зафиксированы аномальные показания наружных датчиков.'},
+        { date:'14 АПРЕЛЯ 19██', content:'Группа «Сеть» подтвердила смещение внутренней планировки. Дом реагирует на присутствие наблюдателя.'},
+        { date:'18 АПРЕЛЯ 19██', content:'«Коготь» обеспечил внешний коридор и не допустил выхода неизвестных факторов за пределы участка.'},
+        { date:'22 АПРЕЛЯ 19██', content:'«Пепел» начал анализ связи VOID с фазовым носителем. Результаты помечены как ограниченные.'}
+      ];
+      unitLog.innerHTML = state.logs.slice(0,8).map((l,i)=>`
+        <div class="timelineItem">
+          <div class="date">${l.time}</div>
+          <div class="contentTxt">${escapeHtml(l.message)}</div>
+        </div>
+      `).join('') || items.map(i=>`
+        <div class="timelineItem">
+          <div class="date">${i.date}</div>
+          <div class="contentTxt">${i.content}</div>
+        </div>`).join('');
+    }
+
+    function escapeHtml(str){
+      return String(str)
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;')
+        .replaceAll('"','&quot;');
+    }
+
+    function showLoading(){
+      const lines = [
+        'Проверка подписи архива...',
+        'Сканирование защищённых сегментов...',
+        'Синхронизация журналов доступа...',
+        'Проверка внутренних документов...',
+        'Инициализация терминального интерфейса...',
+        'Контур готов.'
+      ];
+      let idx = 0;
+      const start = performance.now();
+      const t = setInterval(() => {
+        const p = Math.min(100, ((performance.now()-start)/2500)*100);
+        bar.style.width = p + '%';
+        if(Math.floor(p/16) > idx && idx < lines.length){
+          loadingText.textContent = lines[idx++];
+          beep(420 + idx*60, .04, 'triangle');
+        }
+        if(p >= 100){
+          clearInterval(t);
+          loadingText.textContent = 'Доступ к интерфейсу разрешён.';
+          setTimeout(()=> loading.classList.add('hide'), 450);
+        }
+      }, 40);
+    }
+
+    function setAccess(level){
+      state.access = Math.max(state.access, level);
+      currentAccess.textContent = state.access;
+      document.querySelectorAll('[data-access]').forEach(panel => {
+        const access = Number(panel.dataset.access);
+        if(state.access >= access){
+          panel.classList.remove('hidden');
+          panel.classList.remove('locked');
+        }else{
+          panel.classList.add('hidden');
+        }
+      });
+      saveState();
+    }
+
+    function lockRemaining(){
+      const rem = Math.max(0, Math.ceil((state.lockedUntil - Date.now()) / 1000));
+      if(rem > 0){
+        lockNotice.textContent = `Контур заблокирован. Повторите через ${rem} сек.`;
+        unlockBtn.disabled = true;
+        setTimeout(lockRemaining, 1000);
+      }else{
+        unlockBtn.disabled = false;
+        lockNotice.textContent = 'Ожидание ввода.';
+        state.lockedUntil = 0;
+        state.failCount = 0;
+        saveState();
+      }
+    }
+
+    function attemptUnlock(){
+      const code = codeInput.value.trim().toUpperCase();
+      if(!code){
+        toast('ПУСТОЙ ВВОД', 'Введите код доступа.');
+        beep(160, .08, 'square');
+        return;
+      }
+      if(Date.now() < state.lockedUntil){
+        lockRemaining();
+        return;
+      }
+      const level = Object.entries(ACCESS_CODES).find(([,v]) => v === code)?.[0];
+      if(level){
+        const lvl = Number(level);
+        if(lvl > state.access){
+          state.access = lvl;
+        }
+        setAccess(lvl);
+        state.failCount = 0;
+        codeInput.value = '';
+        lockNotice.textContent = `Доступ уровня ${lvl} подтверждён.`;
+        toast('ДОСТУП ПОДТВЕРЖДЁН', `Открыт уровень допуска ${lvl}.`);
+        beep(760, .09, 'sine');
+        beep(990, .07, 'triangle');
+        logAccess(`Успешная авторизация. Открыт уровень допуска ${lvl}.`, 'success');
+        switchTab(lvl === 1 ? 'archive' : lvl === 2 ? 'objects' : 'research');
+      }else{
+        state.failCount += 1;
+        beep(120, .1, 'sawtooth');
+        toast('ОТКАЗ', 'Неверный код доступа.');
+        lockNotice.textContent = `Ошибка авторизации (${state.failCount}/3).`;
+        logAccess(`Неудачная попытка входа: "${code || '[пусто]'}".`, 'fail');
+        if(state.failCount >= 3){
+          state.lockedUntil = Date.now() + 30000;
+          unlockBtn.disabled = true;
+          lockNotice.textContent = 'Слишком много ошибок. Контур заблокирован на 30 секунд.';
+          toast('БЛОКИРОВКА', 'Слишком много неверных попыток.');
+          logAccess('Контур доступа временно заблокирован после серии ошибок.', 'warn');
+          lockRemaining();
+        }
+      }
+      saveState();
+    }
+
+    function switchTab(tab){
+      state.activeTab = tab;
+      document.querySelectorAll('.tab').forEach(btn=>{
+        btn.classList.toggle('active', btn.dataset.tab === tab);
+      });
+      document.querySelectorAll('.tabPanel').forEach(p=>{
+        const show = p.dataset.panel === tab;
+        p.classList.toggle('hidden', !show);
+      });
+      if(state.access < 1 && tab !== 'overview'){
+        toast('ТРЕБУЕТСЯ АВТОРИЗАЦИЯ', 'Откройте хотя бы уровень допуска 1.');
+      }else{
+        toast('РАЗДЕЛ ОТКРЫТ', tab === 'overview' ? 'Обзор архивной системы.' : 'Документы загружены.');
+      }
+      if(tab === 'archive' && state.access < 1){
+        document.querySelector('[data-panel="archive"]').classList.remove('hidden');
+        document.querySelector('[data-panel="archive"]').classList.add('locked');
+      }
+      saveState();
+    }
+
+    function applySearch(q){
+      q = q.trim().toLowerCase();
+      document.querySelectorAll('.doc, .box, .note, .docCard, .timelineItem').forEach(node=>{
+        const text = node.textContent.toLowerCase();
+        const show = !q || text.includes(q);
+        node.style.display = show ? '' : 'none';
+      });
+    }
+
+    function typeLines(){
+      const txts = [
+        'Соединение с архивом установлено...',
+        'Ожидание кода доступа...',
+        'Подсистемы наблюдения активны...',
+        'Сканирующие линии включены...',
+        'Готово.'
+      ];
+      let i = 0;
+      const interval = setInterval(()=>{
+        loadingText.textContent = txts[i];
+        i++;
+        if(i >= txts.length) clearInterval(interval);
+      }, 430);
+    }
+
+    function setClock(){
+      clock.textContent = new Date().toLocaleString('ru-RU', { dateStyle:'medium', timeStyle:'short' });
+    }
+
+    document.querySelectorAll('.tab').forEach(btn=>{
+      btn.addEventListener('click', ()=> switchTab(btn.dataset.tab));
+    });
+
+    unlockBtn.addEventListener('click', attemptUnlock);
+    codeInput.addEventListener('keydown', e=>{ if(e.key === 'Enter') attemptUnlock(); });
+
+    toggleCodeBtn.addEventListener('click', ()=>{
+      codeInput.type = codeInput.type === 'password' ? 'text' : 'password';
+      toggleCodeBtn.textContent = codeInput.type === 'password' ? 'Показать код' : 'Скрыть код';
+      toast('РЕЖИМ ВВОДА', codeInput.type === 'password' ? 'Код скрыт.' : 'Код отображается.');
+      beep(520, .04, 'triangle');
+    });
+
+    soundBtn.addEventListener('click', ()=>{
+      state.sound = !state.sound;
+      soundBtn.textContent = `Звук: ${state.sound ? 'ВКЛ' : 'ВЫКЛ'}`;
+      toast('ИНТЕРФЕЙС', state.sound ? 'Звуки интерфейса включены.' : 'Звуки интерфейса выключены.');
+      saveState();
+    });
+
+    clearSearch.addEventListener('click', ()=>{
+      searchInput.value = '';
+      applySearch('');
+      toast('ПОИСК', 'Фильтр сброшен.');
+    });
+
+    searchInput.addEventListener('input', ()=> applySearch(searchInput.value));
+
+    purgeBtn.addEventListener('click', ()=>{
+      if(confirm('Стереть локальные следы доступа, журнал и сохранённое состояние?')){
+        localStorage.removeItem('phoenix_archive_state');
+        state.access = 0;
+        state.failCount = 0;
+        state.lockedUntil = 0;
+        state.logs = [];
+        currentAccess.textContent = '0';
+        journalCount.textContent = '0';
+        codeInput.value = '';
+        unlockBtn.disabled = false;
+        lockNotice.textContent = 'Локальные данные удалены. Ожидание ввода.';
+        renderUnitLog();
+        document.querySelectorAll('[data-access]').forEach(panel => panel.classList.add('hidden'));
+        document.querySelector('[data-panel="overview"]').classList.remove('hidden');
+        switchTab('overview');
+        toast('СТИРАНИЕ', 'Локальное состояние очищено.');
+      }
+    });
+
+    document.querySelectorAll('.openDoc').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const title = btn.dataset.title || 'Документ';
+        toast('ДОКУМЕНТ ОТКРЫТ', title);
+        beep(660, .05, 'sine');
+      });
+    });
+
+    loadState();
+    currentAccess.textContent = state.access || 0;
+    journalCount.textContent = state.logs.length || 0;
+    renderUnitLog();
+    document.querySelectorAll('[data-access]').forEach(panel => {
+      const access = Number(panel.dataset.access);
+      panel.classList.toggle('hidden', state.access < access);
+    });
+    if(state.lockedUntil && Date.now() < state.lockedUntil){
+      lockRemaining();
+    }
+    soundBtn.textContent = `Звук: ${state.sound ? 'ВКЛ' : 'ВЫКЛ'}`;
+    switchTab('overview');
+    showLoading();
+    typeLines();
+    setClock();
+    setInterval(setClock, 1000);
+
+    logAccess('Система загружена. Инициализирован центральный архив.', 'info');
+    logAccess('Разделы "Архив документов", "Подразделения", "Исследования" и "Объекты" готовы к авторизации.', 'info');
+
+    const observer = new IntersectionObserver(entries=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          entry.target.style.transition = 'opacity .5s ease, transform .5s ease';
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: .12 });
+
+    document.querySelectorAll('.card, .docCard, .box, .note, .timelineItem').forEach(elm=>{
+      elm.style.opacity = '0.96';
+      elm.style.transform = 'translateY(0)';
+      observer.observe(elm);
+    });
+  </script>
+</body>
+</html>
